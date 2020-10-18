@@ -36,6 +36,14 @@ class MainWindow(qtw.QWidget):
 				return
 
 			else:
+				#Message
+				msg_title = 'Creating Your Input List'
+				msg_text = 'The list of files you wish to pack is being created.'
+				msg_box.setText(msg_title)
+				msg_box.setInformativeText(msg_text)
+				msg_box.exec_()
+
+				#List
 				path = ent_dir_pak.text() + '/'
 				input_list = ent_pak_create.text() + '.txt'
 				dirs = os.listdir(path)
@@ -44,21 +52,57 @@ class MainWindow(qtw.QWidget):
 						f.write(path + "%s\n" % item)
 
 		#Pack
-		def create_pak(): 
-			input_list()
-			builder = ent_dir_pak_builder.text()
-			input_list = os.path.abspath(ent_pak_create.text()) + ".txt"
-			pak = ent_pak_create.text() + ".pak"
+		def create_pak():
+			#Make List
+			if ent_dir_pak_builder.text() == '':
+				qtw.QMessageBox.information(self, 'Error', 'Path to PakBuilder.exe not set.')
+				return
 
-			try:
-				pak_builder = subprocess.Popen([builder, "-c", input_list, pak],
-				stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
-    
-			except Exception as ex:
-				print(ex)
-    
+			elif ent_dir_pak.text() == '':
+				qtw.QMessageBox.information(self, 'Error', 'Please choose the directory you wish to pack.')
+				return
+
+			elif ent_pak_create.text() == '':
+				qtw.QMessageBox.information(self, 'Error', 'Please choose a name for the pak file you wish to create.')
+				return
+
 			else:
-				print(pak_builder.communicate())
+				#Message
+				msg_title = 'Creating Your Input List'
+				msg_text = 'The list of files you wish to pack is being created.'
+				msg_box.setText(msg_title)
+				msg_box.setInformativeText(msg_text)
+				msg_box.exec_()
+
+				#List
+				path = ent_dir_pak.text() + '/'
+				input_list = ent_pak_create.text() + '.txt'
+				dirs = os.listdir(path)
+				with open(input_list, 'w', encoding='utf-8') as f:
+					for item in dirs:
+						f.write(path + "%s\n" % item)
+
+				#Build Pack
+				builder = ent_dir_pak_builder.text()
+				input_list = os.path.abspath(ent_pak_create.text()) + ".txt"
+				pak = ent_pak_create.text() + ".pak"
+
+				#Message
+				msg_title = 'Building' + pak
+				msg_text = 'Your .pak is being built. Please be patient.'
+				msg_box.setText(msg_title)
+				msg_box.setInformativeText(msg_text)
+				msg_box.exec_()
+
+				try:
+					pak_builder = subprocess.Popen([builder, "-c", input_list, pak],
+					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
+    
+				except Exception as ex:
+					print(ex)
+    
+				else:
+					print(pak_builder.communicate())
 
 		#Unpack
 		def unpack_pak():
@@ -66,23 +110,30 @@ class MainWindow(qtw.QWidget):
 				qtw.QMessageBox.information(self, "Error", "Please set the directory of the pakfileunpacker.exe")
 				return
 
-			elif ent_data_dir.get() == '':
+			elif ent_dir_data.text() == '':
 				qtw.QMessageBox.information(self, "Error", "Please set the data directory where the .pak file is located.")
 				return
 
-			elif ent_pak_name.get() == '':
+			elif ent_pak_unpack.text() == '':
 				qtw.QMessageBox.information(self, "Error", "Please set the name of the .pak file you wish to unpack.")
 				return
     
-			elif ent_target_dir.get() == '':
+			elif ent_dir_target.text() == '':
 				qtw.QMessageBox.information(self, "Error", "Please set the directory you wish to unpack into.")
 				return
 
 			else:
 				unpacker = ent_dir_pak_unpacker.text()
 				path = ent_dir_data.text() + "/"
-				pak = ent_pak_name.text() + ".pak"
+				pak = ent_pak_unpack.text() + ".pak"
 				target = ent_dir_target.text() + "/"
+
+				#Message
+				msg_title = 'Unpacking' + pak
+				msg_text = 'Your .pak is being unpacked. Please be patient.'
+				msg_box.setText(msg_title)
+				msg_box.setInformativeText(msg_text)
+				msg_box.exec_()
 
 				try:
 					unpacker_unpack = subprocess.Popen([unpacker, path + pak, 'unpack', target],
@@ -94,7 +145,7 @@ class MainWindow(qtw.QWidget):
 				else:
 					print(unpacker_unpack.communicate())
 		#List
-		def list_pak():
+		def list_pak():		
 			if ent_dir_pak_unpacker.text() == "":
 				qtw.QMessageBox.information(self, "Error", "Please set the directory of the pakfileunpacker.exe")
 				return
@@ -103,15 +154,22 @@ class MainWindow(qtw.QWidget):
 				qtw.QMessageBox.information(self, "Error", 'Please set the data directory where the .pak file is located.')
 				return
 
-			elif ent_pak_name.text() == "":
+			elif ent_pak_unpack.text() == "":
 				qtw.QMessageBox.information(self, "Error", "Please set the name of the .pak file you wish to list the contents of.")
 				return
 
 			else:
 				unpacker = ent_dir_pak_unpacker.text()
 				path = ent_dir_data.text() + "/"
-				pak = ent_pak_name.text() + ".pak"
-				pak_list_file = ent_pak_name.text() + ".txt"
+				pak = ent_pak_unpack.text() + ".pak"
+				pak_list_file = ent_pak_unpack.text() + ".txt"
+
+				#Message
+				msg_title = 'Listing Files'
+				msg_text = 'Creating a list of files in:' + pak + '. Please be patient.'
+				msg_box.setText(msg_title)
+				msg_box.setInformativeText(msg_text)
+				msg_box.exec_()
 
 				try:
 					unpacker_list = subprocess.Popen([unpacker, path + pak, 'list'],
@@ -129,24 +187,22 @@ class MainWindow(qtw.QWidget):
 						f.write(pak_contents)
 
 		def encode_function():
-			msg_box = qtw.QMessageBox()
-
 			if ent_path_encoded.text() == '':
 				qtw.QMessageBox.information(self, 'Error', 'Please set the target directory')
 
 			elif ent_path_encode.toPlainText() == '':
-				title = 'Encoding Directory'
-				msg = 'Encoding your .dds Files from Standard Format to KoA Format. Please be patient.'
-				msg_box.setText(title)
-				msg_box.setInformativeText(msg)
+				msg_title = 'Encoding Directory'
+				msg_text = 'Encoding your .dds Files from Standard Format to KoA Format. Please be patient.'
+				msg_box.setText(msg_title)
+				msg_box.setInformativeText(msg_text)
 				msg_box.exec_()
 				encode_dir()
 
 			else:
-				title = 'Encoding Files'
-				msg = 'Encoding your .dds Files from Standard Format to KoA Format. Please be patient.'
-				msg_box.setText(title)
-				msg_box.setInformativeText(msg)
+				msg_title = 'Encoding Files'
+				msg_text = 'Encoding your .dds Files from Standard Format to KoA Format. Please be patient.'
+				msg_box.setText(msg_title)
+				msg_box.setInformativeText(msg_text)
 				msg_box.exec_()
 				encode_files()
 
@@ -184,30 +240,28 @@ class MainWindow(qtw.QWidget):
 				f.write(target)
 
 			for item in absolute_lst:
-				encode = subprocess.Popen([encoder, '2', filepath],
+				encode = subprocess.Popen([encoder, '2', item],
 				stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
 				print(encode.communicate())
 				encode.terminate()
 
 		def decode_function():
-			msg_box = qtw.QMessageBox()
-			
 			if ent_path_decoded.text() == '':
 				qtw.QMessageBox.information(self, 'Error', 'Please set the target directory')
 
 			elif ent_path_decode.toPlainText() == '':
-				title = 'Decoding Directory'
-				msg = 'Decoding your .dds Files from KoA Format to Standard. Please be patient.'
-				msg_box.setText(title)
-				msg_box.setInformativeText(msg)
+				msg_title = 'Decoding Directory'
+				msg_text = 'Decoding your .dds Files from KoA Format to Standard. Please be patient.'
+				msg_box.setText(msg_title)
+				msg_box.setInformativeText(msg_text)
 				msg_box.exec_()
 				decode_dir()
 
 			else:
-				title = 'Decoding Files'
-				msg = 'Decoding your .dds Files from KoA Format to Standard. Please be patient.'
-				msg_box.setText(title)
-				msg_box.setInformativeText(msg)
+				msg_title = 'Decoding Files'
+				msg_text = 'Decoding your .dds Files from KoA Format to Standard. Please be patient.'
+				msg_box.setText(msg_title)
+				msg_box.setInformativeText(msg_text)
 				msg_box.exec_()
 				decode_files()
 
@@ -273,34 +327,6 @@ class MainWindow(qtw.QWidget):
 			ent_dir_encoder.setText(filepath)
 			with open ('ddsencoder_path.txt', 'w') as f:
 				f.write(filepath)
-
-		def patch_source():
-			patch = qtw.QFileDialog.getExistingDirectory()
-			ent_path_en_source.clear()
-			ent_path_en_source.setText(patch)
-			with open('sourcePatch.txt', 'w') as f:
-				f.write(patch)
-
-		def data_source():
-			data = qtw.QFileDialog.getExistingDirectory()
-			ent_path_en_source.clear()
-			ent_path_en_source.setText(data)
-			with open('sourceData.txt', 'w') as f:
-				f.write(data)
-
-		def initial_source():
-			initial = qtw.QFileDialog.getExistingDirectory()
-			ent_path_en_source.clear()
-			ent_path_en_source.setText(initial)
-			with open('sourceInitial.txt', 'w') as f:
-				f.write(initial)
-
-		def set_target():
-			target = qtw.QFileDialog.getExistingDirectory()
-			ent_path_en_target.clear()
-			ent_path_en_target.setText(target)
-			with open('targetPath.txt', 'w') as f:
-				f.write(target)
 
 		#Pack/Unpack
 		def browse_dir_pak():
@@ -402,30 +428,37 @@ class MainWindow(qtw.QWidget):
 		layout.addWidget(frm_footer)
 
 		#Main
-		lbl_main_intro = qtw.QLabel('This is a very alpha version created to match the release of the KoA Encoding/Decoding tools by Szlobi. Currently, error reporting is minimal and there are only a few checks to ensure that the correct data has been entered.', 
+		lbl_main_intro = qtw.QLabel("This is a very alpha version created to match the release of the KoA Encoding/Decoding tools by Szlobi and to extend GUI support to the pakfilebuilder and pakfileunpacker released by the developers. You may set the pakfilebuilder, pakfileunpacker, and KOARR_dds_encoder paths under the settings tab. This GUI must be placed in the same folder as the KOARR_dds_encoder in order to encode and decode *.dss files.", 
 			self
 		)
 		lbl_main_intro.setWordWrap(1)
-		lbl_main_packaging = qtw.QLabel('Packaging: The app can package a directory into a KoA .pak file using the modding tools provided by the developer. To do so, select the directory you wish to pack via the browse button and enter a .pak name (omitting the .pak at the end). In addition, you must set the directory path for the pakfilebuilder.exe, located in the KoA game directory in the modding folder. If the file is large, the app will appear to hang and do nothing. However, the pakfilebuilder.exe will be working in the background and a list of the files packed will appear in the terminal upon completion. An update will come soon with progress indication.', 
+		lbl_main_packaging = qtw.QLabel("Unpacking: To unpackage a KoA.pak, select the KoA data directory, select a target directory and choose a .pak you wish to unpack. Any 3rd party .pak can also be unpacked this way, however, this GUI does not currently support absolute file paths for unpacking. You may also create a list of all files contained within a .pak by using the ‘List’ function. The list will be created in the GUI root folder.", 
 			self
 		)
 		lbl_main_packaging.setWordWrap(1)
-		lbl_main_unpacking = qtw.QLabel('Unpacking: The app can unpackage a KoA .pak file into a directory using the modding tools provided by the developers. To do so, select the KoA Data directory, a directory you wish to unpack the files into and name the .pak you wish to unpack (omitting the .pak at the end of the name. In addition, you must set the directory path for the pakfileunpacker.exe, located in the KoA game directory in the modding folder. If the file is large, the app will appear to hang and do nothing. However, the pakfileunpacker.exe will be working in the background. However, it will not output any information to the terminal upon completion.', 
+		lbl_main_unpacking = qtw.QLabel("Packaging: To package a KoA.pak, select a directory you wish to create a .pak of and name your .pak (omitting the file extension at the end). This does not ensure that your .pak works, only that it is built. The package will be created in the GUI root folder.", 
 			self
 		)
 		lbl_main_unpacking.setWordWrap(1)
-		lbl_main_encoding = qtw.QLabel('WIP', 
+		lbl_main_encoding = qtw.QLabel("Decoding: To decode a KoA.dds that you have unpacked, input the target directory and use the ‘Decode’ function. Single or multiple *.dds files can be decoded by entering the absolute file paths in the text box, or you can decode a directory using the ‘Decode Source Directory’ line. The text box is read only: to enter file paths, use the ‘Browse’ button to the right.", 
 			self
 		)
-		lbl_main_decoding = qtw.QLabel('WIP',
+		lbl_main_encoding.setWordWrap(1)
+		lbl_main_decoding = qtw.QLabel("Encoding: to re-encode a *.dds to KoA format that you have edited, input the target directory and use the ‘Encode’ function. Single or multiple. *.dds files can be re-encoded by entering the absolute file paths in the text box, or you can re-encode a directory using the ‘Encode Source Directory’ line. The text box is read only: to enter file paths, use the ‘Browse’ button to the right.",
 			self
 		)
+		lbl_main_decoding.setWordWrap(1)
+		lbl_main_thoughts = qtw.QLabel("Encoding files into KoA.dds format is more complicated than simply choosing a file. Therefore, I would recommend you read the documentation provided by Szlobi for the encoder.exe and any follow up questions should be directed to the #modding channel on Discord.",
+			self
+		)
+		lbl_main_thoughts.setWordWrap(1)
 
 		layout_main.addWidget(lbl_main_intro)
 		layout_main.addWidget(lbl_main_packaging)
 		layout_main.addWidget(lbl_main_unpacking)
 		layout_main.addWidget(lbl_main_encoding)
 		layout_main.addWidget(lbl_main_decoding)
+		layout_main.addWidget(lbl_main_thoughts)
 
 		#Pack & Unpack
 		frm_pack = qtw.QFrame(self)
@@ -445,7 +478,7 @@ class MainWindow(qtw.QWidget):
 		
 		frm_pack_footer = qtw.QFrame()
 		btn_create_pak = qtw.QPushButton('Pack', self)
-		btn_create_pak.clicked.connect(input_list)
+		btn_create_pak.clicked.connect(create_pak)
 
 		#Pack Layout
 		layout_pack = qtw.QGridLayout()
@@ -611,8 +644,12 @@ class MainWindow(qtw.QWidget):
 
 		layout_settings.addWidget(frm_settings_footer)
 
+		#Message Popup for Functions
+		global msg_box
+		msg_box = qtw.QMessageBox()
+
 		#Stylesheet
-		stylesheet = 'appstyle.css'
+		stylesheet = 'gui.css'
 		with open(stylesheet, 'r') as fh:
 			self.setStyleSheet(fh.read())
 

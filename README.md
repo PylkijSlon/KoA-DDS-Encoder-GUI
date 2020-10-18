@@ -27,4 +27,4 @@ gui.py uses the following python modules:
 
 5) PyQt5
 
-All non-standard (as of python 3.8.5 on Windows) will need to be installed. I would recomend using pip 
+All non-standard (as of python 3.8.5 on Windows) will need to be installed to run gui.py. I would recomend using pip.

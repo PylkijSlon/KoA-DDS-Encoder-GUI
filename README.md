@@ -18,10 +18,13 @@ gui.py uses the following python modules:
 
 ### Standard
 1)sys
+
 2)os
+
 3)subprocess
 ### Non-standard
 4)fnmatch
+
 5)PyQt5
 
 All non-standard (as of python 3.8.5 on Windows) will need to be installed. I would recomend using pip 

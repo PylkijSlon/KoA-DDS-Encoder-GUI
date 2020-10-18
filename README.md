@@ -17,14 +17,14 @@ Source code for the GUI and a copy of the GNU GPL v3.0 is available on GitHub at
 gui.py uses the following python modules:
 
 ### Standard
-1)sys
+1) sys
 
-2)os
+2) os
 
-3)subprocess
+3) subprocess
 ### Non-standard
-4)fnmatch
+4) fnmatch
 
-5)PyQt5
+5) PyQt5
 
 All non-standard (as of python 3.8.5 on Windows) will need to be installed. I would recomend using pip 

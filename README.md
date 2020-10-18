@@ -1,6 +1,6 @@
 # KoA-DDS-Encoder
 
-1) Unpack the gui.exe and gui.css into the same folder directory as the KOARR_dds_encoder.exe
+1) Unpack the gui.exe and gui.css into the same folder directory as the KOARR_dds_encoder.exe (the gui.exe is currently not available on GitHub. I will update with a link to a download as soon as one is available).
 
 2) Set the absolute file paths for the pakfilebuilder.exe, pakfileunpacker.exe and KOARR_dds_encoder.exe on the Setting tab.
 

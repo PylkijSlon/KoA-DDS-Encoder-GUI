@@ -122,7 +122,7 @@ class MainWindow(qtw.QWidget):
 				qtw.QMessageBox.information(self, "Error", "Please set the directory you wish to unpack into.")
 				return
 
-			else:
+			elif ent_unpack_files.toPlainText() == '':
 				unpacker = ent_dir_pak_unpacker.text()
 				path = ent_dir_data.text() + "/"
 				pak = ent_pak_unpack.text() + ".pak"
@@ -138,12 +138,33 @@ class MainWindow(qtw.QWidget):
 				try:
 					unpacker_unpack = subprocess.Popen([unpacker, path + pak, 'unpack', target],
 					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
-
+					print(ent_unpack_files.toPlainText())
+					
 				except Exception as ex:
 					print(ex)
     
 				else:
 					print(unpacker_unpack.communicate())
+
+			else:
+				unpacker = ent_dir_pak_unpacker.text()
+				path = ent_dir_data.text() + "/"
+				pak = ent_pak_unpack.text() + ".pak"
+				target = ent_dir_target.text() + "/"
+				files = ent_unpack_files.toPlainText()
+
+				files_lst = []
+				for subs in files.split(','):
+					files_lst.append(subs)
+
+				for item in files_lst:
+					print(item.strip())
+
+				for item in files_lst:
+					unpacker_unpack = subprocess.Popen([unpacker, path + pak, 'unpack', target, item.strip()],
+					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
+					print(unpacker_unpack.communicate())
+
 		#List
 		def list_pak():		
 			if ent_dir_pak_unpacker.text() == "":
@@ -219,7 +240,8 @@ class MainWindow(qtw.QWidget):
 				f.write(target)
 
 			for item in dds_names:
-				encode = subprocess.Popen([encoder, '2', filepath],
+				print(item.strip())
+				encode = subprocess.Popen([encoder, '2', item.strip()],
 				stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
 				print(encode.communicate())
 				encode.terminate()
@@ -278,7 +300,7 @@ class MainWindow(qtw.QWidget):
 				f.write(target)
 
 			for item in dds_names:
-				decode = subprocess.Popen([encoder, '1', item],
+				decode = subprocess.Popen([encoder, '1', item.strip()],
 				stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
 				print(decode.communicate())
 				decode.terminate()
@@ -498,10 +520,12 @@ class MainWindow(qtw.QWidget):
 		lbl_dir_data = qtw.QLabel('Data Directory', self)
 		lbl_dir_target = qtw.QLabel('Target Directory', self)
 		lbl_pak_unpack = qtw.QLabel('.pak Name', self)
+		lbl_unpack_files = qtw.QLabel('Specific File(s)', self)
 
 		ent_dir_data = qtw.QLineEdit(self)
 		ent_dir_target = qtw.QLineEdit(self)
 		ent_pak_unpack = qtw.QLineEdit(self)
+		ent_unpack_files = qtw.QTextEdit(self)
 
 		btn_browse_dir_data = qtw.QPushButton('Browse', self)
 		btn_browse_dir_target = qtw.QPushButton('Browse', self)
@@ -523,10 +547,12 @@ class MainWindow(qtw.QWidget):
 		layout_unpack.addWidget(lbl_dir_data, 0, 0)
 		layout_unpack.addWidget(lbl_dir_target, 1, 0)
 		layout_unpack.addWidget(lbl_pak_unpack, 2, 0)
+		layout_unpack.addWidget(lbl_unpack_files, 3, 0)
 
 		layout_unpack.addWidget(ent_dir_data, 0, 1)
 		layout_unpack.addWidget(ent_dir_target, 1, 1)
 		layout_unpack.addWidget(ent_pak_unpack, 2, 1)
+		layout_unpack.addWidget(ent_unpack_files, 3, 1)
 
 		layout_unpack.addWidget(btn_browse_dir_data, 0, 2)
 		layout_unpack.addWidget(btn_browse_dir_target, 1, 2)

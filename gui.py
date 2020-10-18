@@ -454,7 +454,7 @@ class MainWindow(qtw.QWidget):
 			self
 		)
 		lbl_main_intro.setWordWrap(1)
-		lbl_main_packaging = qtw.QLabel("Unpacking: To unpackage a KoA.pak, select the KoA data directory, select a target directory and choose a .pak you wish to unpack. Any 3rd party .pak can also be unpacked this way, however, this GUI does not currently support absolute file paths for unpacking. You may also create a list of all files contained within a .pak by using the ‘List’ function. The list will be created in the GUI root folder.", 
+		lbl_main_packaging = qtw.QLabel("Unpacking: To unpackage a KoA.pak, select the KoA data directory, select a target directory and choose a .pak you wish to unpack. Any 3rd party .pak can also be unpacked this way, however, this GUI does not currently support absolute file paths for unpacking. In addition, you may specify specific file(s) that you wish to unpack: enter them into the Specific Files field, including their extension (i.e. 3240.dds), seperated by a ','. You create a list of all files contained within a .pak by using the ‘List’ function. The list will be created in the GUI root folder.", 
 			self
 		)
 		lbl_main_packaging.setWordWrap(1)

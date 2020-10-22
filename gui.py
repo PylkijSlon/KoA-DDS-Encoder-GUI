@@ -358,11 +358,7 @@ class MainWindow(qtw.QWidget):
 
 			txt_search.clear()
 			y = '\n'.join(map(str, result))
-
-			if y == '':
-				txt_search.setText('No results found...')
-			else:
-				txt_search.setText(y)
+			txt_search.setText(y)
 
 		#Browse Buttons
 
@@ -387,6 +383,45 @@ class MainWindow(qtw.QWidget):
 			ent_dir_encoder.setText(filepath)
 			with open ('ddsencoder_path.txt', 'w') as f:
 				f.write(filepath)
+
+		def source_initial():
+			directory = qtw.QFileDialog.getExistingDirectory()
+			ent_source_initial.clear()
+			ent_source_initial.setText(directory)
+
+			with open ('sources.txt', 'r') as file:
+				data = file.readlines()
+
+			data[0] = directory+'\n'
+
+			with open ('sources.txt', 'w') as file:
+				file.writelines(data)
+
+		def source_data():
+			directory = qtw.QFileDialog.getExistingDirectory()
+			ent_source_data.clear()
+			ent_source_data.setText(directory)
+
+			with open ('sources.txt', 'r') as file:
+				data = file.readlines()
+
+			data[1] = directory+'\n'
+
+			with open ('sources.txt', 'w') as file:
+				file.writelines(data)
+
+		def source_patch():
+			directory = qtw.QFileDialog.getExistingDirectory()
+			ent_source_patch.clear()
+			ent_source_patch.setText(directory)
+
+			with open ('sources.txt', 'r') as file:
+				data = file.readlines()
+
+			data[2] = directory+'\n'
+
+			with open ('sources.txt', 'w') as file:
+				file.writelines(data)
 
 		#Pack/Unpack
 		def browse_dir_pak():
@@ -536,10 +571,16 @@ class MainWindow(qtw.QWidget):
 		lbl_dir_pak_builder = qtw.QLabel('PakBuilder Path', self)
 		lbl_dir_pak_unpacker = qtw.QLabel('PakUnpacker Path', self)
 		lbl_dir_encoder = qtw.QLabel('Encoder Path', self)
+		lbl_source_initial = qtw.QLabel('initial_0 Unpacked', self)
+		lbl_source_data = qtw.QLabel('data_0 Unpacked', self)
+		lbl_source_patch = qtw.QLabel('patch_0 Unpacked', self)
 
 		ent_dir_pak_builder = qtw.QLineEdit(self)
 		ent_dir_pak_unpacker = qtw.QLineEdit(self)
 		ent_dir_encoder = qtw.QLineEdit(self)
+		ent_source_initial = qtw.QLineEdit(self)
+		ent_source_data = qtw.QLineEdit(self)
+		ent_source_patch = qtw.QLineEdit(self)
 
 		btn_browse_pak_builder = qtw.QPushButton('Browse', self)
 		btn_browse_pak_builder.clicked.connect(browse_pak_builder)
@@ -547,6 +588,12 @@ class MainWindow(qtw.QWidget):
 		btn_browse_pak_unpacker.clicked.connect(browse_pak_unpacker)
 		btn_browse_encoder = qtw.QPushButton('Browse', self)
 		btn_browse_encoder.clicked.connect(browse_encoder)
+		btn_browse_source_initial = qtw.QPushButton('Browse', self)
+		btn_browse_source_initial.clicked.connect(source_initial)
+		btn_browse_source_data = qtw.QPushButton('Browse', self)
+		btn_browse_source_data.clicked.connect(source_data)
+		btn_browse_source_patch = qtw.QPushButton('Browse', self)
+		btn_browse_source_patch.clicked.connect(source_patch)
 
 		frm_settings_footer = qtw.QFrame()
 
@@ -554,14 +601,23 @@ class MainWindow(qtw.QWidget):
 		layout_settings.addWidget(lbl_dir_pak_builder, 0, 0)
 		layout_settings.addWidget(lbl_dir_pak_unpacker, 1, 0)
 		layout_settings.addWidget(lbl_dir_encoder, 2, 0)
+		layout_settings.addWidget(lbl_source_initial, 3, 0)
+		layout_settings.addWidget(lbl_source_data, 4, 0)
+		layout_settings.addWidget(lbl_source_patch, 5, 0)
 
 		layout_settings.addWidget(ent_dir_pak_builder, 0, 1)
 		layout_settings.addWidget(ent_dir_pak_unpacker, 1, 1)
 		layout_settings.addWidget(ent_dir_encoder, 2, 1)
+		layout_settings.addWidget(ent_source_initial, 3, 1)
+		layout_settings.addWidget(ent_source_data, 4, 1)
+		layout_settings.addWidget(ent_source_patch, 5, 1)
 
 		layout_settings.addWidget(btn_browse_pak_builder, 0, 2)
 		layout_settings.addWidget(btn_browse_pak_unpacker, 1, 2)
 		layout_settings.addWidget(btn_browse_encoder, 2, 2)
+		layout_settings.addWidget(btn_browse_source_initial, 3, 2)
+		layout_settings.addWidget(btn_browse_source_data, 4, 2)
+		layout_settings.addWidget(btn_browse_source_patch, 5, 2)
 
 		layout_settings.addWidget(frm_settings_footer)
 
@@ -742,6 +798,46 @@ class MainWindow(qtw.QWidget):
 		layout_search.addWidget(ent_search, 0, 1)
 		layout_search.addWidget(txt_search, 1, 1)
 		layout_search.addWidget(btn_search, 4, 0)
+
+		#Check File Paths
+		def builder_path_check():
+			if os.path.isfile('pakfilebuilder_path.txt'):
+				builder_path = open('pakfilebuilder_path.txt', 'r').read()
+				ent_dir_pak_builder.clear()
+				ent_dir_pak_builder.setText(builder_path)
+			else:
+				pass
+
+		def unpacker_path_check():
+			if os.path.isfile('pakfileunpacker_path.txt'):
+				unpacker_path = open('pakfileunpacker_path.txt', 'r').read()
+				ent_dir_pak_unpacker.clear()
+				ent_dir_pak_unpacker.setText(unpacker_path)
+			else:
+				pass
+
+		def encoder_path_check():
+			if os.path.isfile('ddsencoder_path.txt'):
+				encoder_path = open('ddsencoder_path.txt', 'r').read()
+				ent_dir_encoder.clear()
+				ent_dir_encoder.setText(encoder_path)
+			else:
+				pass
+
+		def sources_patch_check():
+			if os.path.isfile('sources.txt'):
+				with open ('sources.txt', 'r') as file:
+					data = file.readlines()
+					ent_source_initial.setText(data[0])
+					ent_source_data.setText(data[1])
+					ent_source_patch.setText(data[2])
+			else:
+				pass
+
+		builder_path_check()
+		unpacker_path_check()
+		encoder_path_check()
+		sources_patch_check()
 
 
 		#End Main UI Code

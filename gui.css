@@ -515,7 +515,6 @@ QTabWidget::pane {
   	border-radius: 6px;
 }
 QTabBar::tab {
-	min-width: 100px;
 	padding-left:4px;
 	padding-right:4px;
 	padding-bottom:2px;
@@ -540,6 +539,12 @@ QTabBar::tab:selected, QTabBar::tab:last:selected, QTabBar::tab:hover {
 QTabBar::tab:!selected {
 	margin-top: 1px;
 	margin-right: 1px;
+}
+QTabBar::tab:top, QTabBar::tab:bottom {
+	min-width: 100px;
+}
+QTabBar::tab:left, QTabBar:right {
+	min-height: 80px;
 }
 QTextEdit {
 	border-width: 1px;
